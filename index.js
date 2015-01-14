@@ -28,6 +28,23 @@ function getOptions(options) {
       options.blacklist.splice(options.indexOf('modules'), 1);
     }
   } else {
+    // Due to a bug in es6-module-transpiler@0.3.6, if there is a singleline
+    // comment right after a ES6 module export, it incorrectly consumes the
+    // first forward slash, making it a malformed "regexp". This would be rather
+    // rare, except that 6to5 currently hoists many inline comments to the
+    // bottom of the file! Since most files end with an exported function,
+    // this can bite us often. While we work to resolve this, you can turn back
+    // comments back on by providing the option in your app's Brocfile:
+    // 
+    // var app = new EmberApp({
+    //   '6to5': {
+    //     comments: true
+    //   }
+    // });
+    if (options.comments === undefined) {
+      options.comments = false;
+    }
+
     if (options.blacklist.indexOf('modules') < 0) {
       options.blacklist.push('modules');
     }
